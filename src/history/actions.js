@@ -71,3 +71,24 @@ export function deleteAllAction(polygons) {
     },
   };
 }
+
+export function changeColorAction(id, from, to) {
+  return {
+    undo(state) {
+      return {
+        ...state,
+        polygons: state.polygons.map((p) =>
+          p.id === id ? { ...p, color: from || p.color } : p,
+        ),
+      };
+    },
+    redo(state) {
+      return {
+        ...state,
+        polygons: state.polygons.map((p) =>
+          p.id === id ? { ...p, color: to || p.color } : p,
+        ),
+      };
+    },
+  };
+}
