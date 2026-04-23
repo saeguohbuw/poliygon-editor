@@ -53,3 +53,21 @@ export function deletePolygonAction(polygon) {
     },
   };
 }
+
+export function deleteAllAction(polygons) {
+  return {
+    undo(state) {
+      return {
+        ...state,
+        polygons: [...polygons],
+      };
+    },
+    redo(state) {
+      return {
+        ...state,
+        polygons: [],
+        selectedId: null,
+      };
+    },
+  };
+}

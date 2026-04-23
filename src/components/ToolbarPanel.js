@@ -2,6 +2,7 @@ import { store } from "../state/store.js";
 import { createPolygon } from "../geometry/polygon.js";
 import { addPolygonAction } from "../history/actions.js";
 import { deletePolygonAction } from "../history/actions.js";
+import { deleteAllAction } from "../history/actions.js";
 
 class ToolbarPanel extends HTMLElement {
   connectedCallback() {
@@ -9,6 +10,7 @@ class ToolbarPanel extends HTMLElement {
       <div style="padding:10px; display:flex; gap:10px;">
       <button id="gen">Generate</button>
       <button id="delete">Delete</button>
+      <button id="deleteAll">Delete All</button>
       <button id="undo">Undo</button>
       <button id="redo">Redo</button>
     </div>
@@ -16,6 +18,7 @@ class ToolbarPanel extends HTMLElement {
 
     this.querySelector("#gen").onclick = () => this.generate();
     this.querySelector("#delete").onclick = () => this.deleteSelected();
+    this.querySelector("#deleteAll").onclick = () => this.deleteAll();
     this.querySelector("#undo").onclick = () => store.undo();
     this.querySelector("#redo").onclick = () => store.redo();
   }
@@ -48,6 +51,18 @@ class ToolbarPanel extends HTMLElement {
     const polygon = store.polygons.find((p) => p.id === id);
 
     store.apply(deletePolygonAction(polygon));
+  }
+
+  deleteAll() {
+    if (!confirm("Удалить все полигоны?")) return;
+    if (store.polygons.length === 0) return;
+
+    const snapshot = store.polygons.map((p) => ({
+      ...p,
+      points: p.points.map((pt) => ({ ...pt })),
+    }));
+
+    store.apply(deleteAllAction(snapshot));
   }
 }
 
