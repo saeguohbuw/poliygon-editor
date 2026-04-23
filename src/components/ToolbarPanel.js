@@ -23,12 +23,6 @@ class ToolbarPanel extends HTMLElement {
       <button id="export">💾 Export</button>
       <button id="import">📂 Import</button>
       <input type="file" id="fileInput" style="display:none" />
-      <button id="color">🎨 Color</button>
-      <div id="colorModal" style="display:none; position:absolute; top:50px; left:10px; background:#2d2d2d; padding:10px; border-radius:10px;">
-        <input type="color" id="colorPicker" />
-        <button id="colorOk">OK</button>
-        <button id="colorCancel">Cancel</button>
-      </div>
       <info-panel></info-panel>
     `;
 
@@ -40,39 +34,6 @@ class ToolbarPanel extends HTMLElement {
     this.querySelector("#export").onclick = () => this.exportJSON();
     this.querySelector("#import").onclick = () => this.importJSON();
     this.querySelector("#fileInput").onchange = (e) => this.handleFile(e);
-    this.querySelector("#color").onclick = () => {
-      const poly = store.polygons.find((p) => p.id === store.selectedId);
-      if (!poly) return;
-
-      this.tempColor = poly.color || "#000000";
-
-      this.querySelector("#colorPicker").value = poly.color || "#000000";
-      this.querySelector("#colorModal").style.display = "block";
-    };
-    this.querySelector("#colorOk").onclick = () => {
-      const poly = store.polygons.find((p) => p.id === store.selectedId);
-      if (!poly) return;
-
-      const newColor = this.querySelector("#colorPicker").value;
-
-      import("../history/actions.js").then(({ changeColorAction }) => {
-        store.apply(changeColorAction(poly.id, this.tempColor, newColor));
-      });
-
-      this.tempColor = null;
-
-      this.querySelector("#colorModal").style.display = "none";
-    };
-    this.querySelector("#colorCancel").onclick = () => {
-      const poly = store.polygons.find((p) => p.id === store.selectedId);
-      if (!poly) return;
-
-      poly.color = this.tempColor;
-      store.notify();
-
-      this.tempColor = null;
-      this.querySelector("#colorModal").style.display = "none";
-    };
   }
 
   exportJSON() {
@@ -123,17 +84,6 @@ class ToolbarPanel extends HTMLElement {
     };
 
     reader.readAsText(file);
-  }
-
-  changeColor(newColor) {
-    const poly = store.polygons.find((p) => p.id === store.selectedId);
-    if (!poly) return;
-
-    const prevColor = poly.color;
-
-    import("../history/actions.js").then(({ changeColorAction }) => {
-      store.apply(changeColorAction(poly.id, prevColor, newColor));
-    });
   }
 
   generate() {
