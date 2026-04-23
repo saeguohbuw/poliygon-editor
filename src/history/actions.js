@@ -35,3 +35,21 @@ export function movePolygonAction(id, from, to) {
     },
   };
 }
+
+export function deletePolygonAction(polygon) {
+  return {
+    undo(state) {
+      return {
+        ...state,
+        polygons: [...state.polygons, polygon],
+      };
+    },
+    redo(state) {
+      return {
+        ...state,
+        polygons: state.polygons.filter((p) => p.id !== polygon.id),
+        selectedId: null,
+      };
+    },
+  };
+}
