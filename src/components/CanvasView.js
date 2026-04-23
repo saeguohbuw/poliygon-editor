@@ -2,6 +2,7 @@ import { store } from "../state/store.js";
 import { isPointInPolygon } from "../geometry/hitTest.js";
 import { Renderer } from "../canvas/Renderer.js";
 import { movePolygonAction } from "../history/actions.js";
+import { hasCollision } from "../geometry/collision.js";
 
 class CanvasView extends HTMLElement {
   connectedCallback() {
@@ -60,20 +61,31 @@ class CanvasView extends HTMLElement {
     if (!this.dragging) return;
 
     const mouse = this.getMouse(e);
+
     const dx = mouse.x - this.lastPos.x;
     const dy = mouse.y - this.lastPos.y;
 
     const poly = store.polygons.find((p) => p.id === store.selectedId);
     if (!poly) return;
 
-    poly.points.forEach((pt) => {
-      pt.x += dx;
-      pt.y += dy;
-    });
+    const moved = {
+      ...poly,
+      points: poly.points.map((pt) => ({
+        x: pt.x + dx,
+        y: pt.y + dy,
+      })),
+    };
 
-    store.notify();
+    const others = store.polygons.filter((p) => p.id !== poly.id);
+
+    if (hasCollision(moved, others)) {
+      return;
+    }
+
+    poly.points = moved.points;
 
     this.lastPos = mouse;
+    store.notify();
   }
 
   onUp() {
