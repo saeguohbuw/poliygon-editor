@@ -8,19 +8,23 @@ import { getBounds } from "../geometry/collision.js";
 
 class ToolbarPanel extends HTMLElement {
   connectedCallback() {
+    this.style.display = "flex";
+    this.style.gap = "10px";
+    this.style.padding = "10px";
+    this.style.background = "#252525";
+
     this.innerHTML = `
-      <div style="padding:10px; display:flex; gap:10px;">
-      <button id="gen">Generate</button>
-      <button id="delete">Delete</button>
-      <button id="deleteAll">Delete All</button>
-      <button id="undo">Undo</button>
-      <button id="redo">Redo</button>
-    </div>
-`;
+      <button id="gen">➕ Generate</button>
+      <button id="del">🗑 Delete</button>
+      <button id="delAll">💣 Clear</button>
+      <button id="undo">↶ Undo</button>
+      <button id="redo">↷ Redo</button>
+      <info-panel></info-panel>
+    `;
 
     this.querySelector("#gen").onclick = () => this.generate();
-    this.querySelector("#delete").onclick = () => this.deleteSelected();
-    this.querySelector("#deleteAll").onclick = () => this.deleteAll();
+    this.querySelector("#del").onclick = () => this.delete();
+    this.querySelector("#delAll").onclick = () => this.deleteAll();
     this.querySelector("#undo").onclick = () => store.undo();
     this.querySelector("#redo").onclick = () => store.redo();
   }
