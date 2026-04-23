@@ -1,4 +1,4 @@
-import { store } from '../state/store.js';
+import { store } from "../state/store.js";
 
 class AppRoot extends HTMLElement {
   connectedCallback() {
@@ -10,4 +10,4 @@ class AppRoot extends HTMLElement {
   }
 }
 
-customElements.define('app-root', AppRoot);
+customElements.define("app-root", AppRoot);

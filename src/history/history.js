@@ -1,19 +1,29 @@
 export class History {
   constructor() {
-    this.undo = [];
-    this.redo = [];
+    this.undoStack = [];
+    this.redoStack = [];
   }
 
   push(action) {
-    this.undo.push(action);
-    this.redo = [];
+    this.undoStack.push(action);
+    this.redoStack = [];
   }
 
-  undoAction() {
-    return this.undo.pop();
+  undo(state) {
+    const action = this.undoStack.pop();
+    if (!action) return state;
+
+    this.redoStack.push(action);
+    return action.undo(state);
   }
 
-  redoAction() {
-    return this.redo.pop();
+  redo(state) {
+    const action = this.redoStack.pop();
+    if (!action) return state;
+
+    this.undoStack.push(action);
+    return action.redo(state);
   }
 }
+
+export const history = new History();

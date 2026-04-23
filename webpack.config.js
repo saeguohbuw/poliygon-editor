@@ -1,25 +1,25 @@
-const path = require('path');
+const path = require("path");
 
 module.exports = {
-  mode: 'development',
+  mode: "development",
 
-  target: 'web',
+  target: "web",
 
-  entry: './src/index.js',
+  entry: "./src/index.js",
 
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "dist"),
     clean: true,
-    publicPath: '/'
+    publicPath: "/",
   },
 
   devServer: {
     static: {
-      directory: path.join(__dirname, 'public')
+      directory: path.join(__dirname, "public"),
     },
     port: 3000,
     open: true,
-    hot: true
-  }
+    hot: true,
+  },
 };

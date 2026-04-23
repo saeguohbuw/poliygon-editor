@@ -6,7 +6,7 @@ export function createPolygon(cx, cy, radius, count) {
 
     points.push({
       x: cx + Math.cos(angle) * radius,
-      y: cy + Math.sin(angle) * radius
+      y: cy + Math.sin(angle) * radius,
     });
   }
 

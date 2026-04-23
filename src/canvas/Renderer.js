@@ -1,12 +1,12 @@
 export class Renderer {
   constructor(canvas) {
-    this.ctx = canvas.getContext('2d');
+    this.ctx = canvas.getContext("2d");
   }
 
   draw(polygons, selectedId) {
     this.clear();
 
-    polygons.forEach(p => {
+    polygons.forEach((p) => {
       this.ctx.beginPath();
 
       p.points.forEach((pt, i) => {
@@ -19,7 +19,7 @@ export class Renderer {
       this.ctx.fillStyle = p.color;
       this.ctx.fill();
 
-      this.ctx.strokeStyle = p.id === selectedId ? 'yellow' : '#111';
+      this.ctx.strokeStyle = p.id === selectedId ? "yellow" : "#111";
       this.ctx.lineWidth = p.id === selectedId ? 3 : 1;
       this.ctx.stroke();
     });
