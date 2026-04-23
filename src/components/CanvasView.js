@@ -128,9 +128,57 @@ class CanvasView extends HTMLElement {
   render() {
     if (!this.ctx) return;
 
+    const now = Date.now();
+
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    store.polygons.forEach((p) => this.drawPolygon(p));
+    store.polygons.forEach((p) => {
+      const duration = 300;
+      const t = Math.min(1, (now - (p.createdAt || 0)) / duration);
+
+      this.drawPolygonAnimated(p, t);
+    });
+
+    if (store.polygons.some((p) => now - (p.createdAt || 0) < 300)) {
+      requestAnimationFrame(() => this.render());
+    }
+  }
+
+  drawPolygonAnimated(polygon, t) {
+    const ctx = this.ctx;
+
+    const ease = t * (2 - t);
+
+    const cx =
+      polygon.points.reduce((sum, p) => sum + p.x, 0) / polygon.points.length;
+    const cy =
+      polygon.points.reduce((sum, p) => sum + p.y, 0) / polygon.points.length;
+
+    ctx.save();
+
+    ctx.globalAlpha = ease;
+
+    ctx.translate(cx, cy);
+    ctx.scale(ease, ease);
+    ctx.translate(-cx, -cy);
+
+    ctx.beginPath();
+
+    polygon.points.forEach((pt, i) => {
+      if (i === 0) ctx.moveTo(pt.x, pt.y);
+      else ctx.lineTo(pt.x, pt.y);
+    });
+
+    ctx.closePath();
+
+    ctx.fillStyle = polygon.color;
+    ctx.fill();
+
+    ctx.lineWidth = polygon.id === store.selectedId ? 3 : 1;
+    ctx.strokeStyle = polygon.id === store.selectedId ? "#fff" : "#222";
+    ctx.stroke();
+
+    ctx.restore();
   }
 
   drawPolygon(polygon) {

@@ -45,6 +45,7 @@ class ToolbarPanel extends HTMLElement {
           Math.floor(Math.random() * 5) + 3,
         ),
         color: `hsl(${Math.random() * 360},70%,60%)`,
+        createdAt: Date.now(),
       };
 
       const bounds = getBounds(polygon.points);
